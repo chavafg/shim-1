@@ -11,6 +11,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/google/gofuzz"
 	"github.com/kr/pty"
 	"github.com/stretchr/testify/assert"
 )
@@ -33,11 +34,16 @@ func TestNewShim(t *testing.T) {
 }
 
 func TestShimOps(t *testing.T) {
+	f := fuzz.New()
 	agent := testSetup(t)
 	defer testTearDown(agent)
 
 	contID := "foobarContainer"
+	f.Fuzz(&contID)
+
 	execID := "testExec"
+	f.Fuzz(&execID)
+
 	err := agent.addContainer(contID, execID)
 	assert.Nil(t, err, "%s", err)
 
